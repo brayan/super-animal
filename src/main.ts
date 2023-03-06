@@ -3,35 +3,43 @@ const RIGHT_KEY = "ArrowRight"
 const UP_KEY = "ArrowUp"
 const DOWN_KEY = "ArrowDown"
 
-const animal = document.getElementById("animal")
+const CHARACTER_ID = "character"
+const BLOCK_ID = "block"
+const JUMP_ANIMATION_CLASS = "jump-animation"
+const JUMP_TIMEOUT_IN_MILLIS = 500
+
+const animal = document.getElementById("animal")!
+const block = document.getElementById("block")!
+
+let isJumping = false
 
 initViews()
 
 function initViews() {
-    if (animal != undefined) {
-        animal.style.position = "relative"
-        animal.style.left = "0px"
-        animal.style.top = "0px"
-    }
+    animal.style.position = "relative"
+    animal.style.left = "10px"
+    animal.style.top = "150px"
 
     document.onkeydown = onKeyPressed
 }
 
 function onKeyPressed(event: KeyboardEvent) {
-    if (animal == undefined) {
-        return
-    }
     switch(event.code) {
         case LEFT_KEY: {
             animal.style.left = (parseInt(animal.style.left) - 10) + "px"
             break
         }
         case RIGHT_KEY: {
-            animal.style.left = (parseInt(animal.style.left) + 10) + "px"
+            if (isJumping) {
+                animal.style.left = (parseInt(animal.style.left) + 50) + "px"
+            } else {
+                animal.style.left = (parseInt(animal.style.left) + 10) + "px"
+            }
+            
             break
         }
         case UP_KEY: {
-            animal.style.top = (parseInt(animal.style.top) - 10) + "px"
+            jump()
             break
         }
         case DOWN_KEY: {
@@ -39,4 +47,18 @@ function onKeyPressed(event: KeyboardEvent) {
             break
         }
     }
+}
+
+function jump() {
+    isJumping = true
+
+    if (!animal.classList.contains(JUMP_ANIMATION_CLASS)) {
+        animal.classList.add(JUMP_ANIMATION_CLASS)
+    }
+    setTimeout(onFinishJumping, JUMP_TIMEOUT_IN_MILLIS)
+}
+
+function onFinishJumping() {
+    isJumping = false
+    animal.classList.remove(JUMP_ANIMATION_CLASS)
 }
